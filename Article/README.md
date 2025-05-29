@@ -14,5 +14,11 @@ The time-series dataset for VF treatment is of 5-day old  seedlings (etiolated a
 Both the LatB and VF treated seedlings where imaged using Nikon ECLIPSE Ti-2 inverted microscope with a resolution of 0.065 micrometers with 2 sec. intervals.
 
 ## Scripts
-In the folder code/ all the scripts for data generating and later processing of the data can be found. There are two main folders, depending on the experiment. Mariana/ is the folder containing scripts for seedling position data and Nikon contains the LatB and VF data.
+In the folder code/ all the scripts for data generating and later processing of real data can be found. There are two main folders for data processing data, depending on the experiment. Mariana/ is the folder containing scripts for seedling position data and Nikon contains the LatB and VF data.
 The run*.py is the initial scripts running GraFT. This script take the image-data and generate data that are then later processed in the rest of the scripts. The script timeseries*.py creates a dataset cleaned and pooled together for easy access in the later scripts. The rest of the scripts are for figure creation.
+
+## Synthetic data
+In code/synthetic_data are scripts for generating data as well as scripts for data comparisons between GraFT, TSOAX and DeFiNe are located.
+The synthetic generated data used for the paper is in the subfolders in code/synthetic_data/noise001/.
+The synthetic time-series data is located in code/synthetic_data/timeseries/10_lines_stack/timeseries-data.zip
+We comprised the data due to size constraints.
