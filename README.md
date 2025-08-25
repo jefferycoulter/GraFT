@@ -22,6 +22,8 @@ The tool can perform identifcation on still image-data, and identification with 
 
 This software was written using Python 3.8 and the following libraries: networkx, scikit-image, scipy, pandas, numpy, matplotlib, simplification, plotly, astropy and scikit-spatial (dependency versions are listed in `pyproject.toml`).
 
+To refeer to the release in our paper GraFT: A Robust Network-based Spatiotemporal Analysis of Filamentous Structures, please refer to [![DOI](https://zenodo.org/badge/596098987.svg)](https://doi.org/10.5281/zenodo.16943616)
+
 ## Installation
 
 I recommend creating a new Python environment using [conda](https://www.anaconda.com/download/success#miniconda) and activate it to install dependencies
