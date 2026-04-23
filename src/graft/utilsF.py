@@ -9,6 +9,8 @@ Created on Fri Mar 24 13:29:36 2023
 import os
 import numpy as np
 import pandas as pd
+import matplotlib
+matplotlib.use("Agg")
 import skimage
 from skimage.filters import threshold_otsu
 import scipy as sp
@@ -24,12 +26,11 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 import matplotlib.cm as cmx
 import astropy.stats
-import plotly.graph_objects as go
 from astropy import units as u
 from skspatial.objects import Line, Point
 import pickle
 import functools
-import pkg_resources
+from importlib.resources import files  # https://docs.python.org/3/library/importlib.resources.html
 
 from graft.node_condense import node_condense_faster_modularized
 
@@ -2202,30 +2203,25 @@ def barplot180(list_points, list_bins, output_path, color_code):
     None.
 
     '''
-    fig = go.Figure(go.Barpolar(
-        r=list_points,
-        theta=list_bins,
-        width=5,
-        marker_line_color="black",
-        marker_line_width=1,
-        opacity=0.8,
-        marker_color=color_code,
-        # yellow '#FFFF00'
-        # blue 	#0000FF
-    ))
-
-    fig.update_layout(
-        polar = dict(radialaxis = dict(showticklabels=False, ticks=''), sector = [0,180],
-                     radialaxis_showgrid=False,
-                     angularaxis=dict(
-                         #showgrid=False,
-                #rotation=180,
-                #direction='clockwise',
-                tickfont = dict(size = 30))
-                             )
-                )
-    
-    fig.write_image(output_path, format='png')
+    fig = plt.figure(figsize=(7, 5), dpi=100)
+    ax = fig.add_subplot(111, projection='polar')
+    ax.bar(
+        np.deg2rad(list_bins),
+        list_points,
+        width=np.deg2rad(5),
+        color=color_code,
+        edgecolor="black",
+        linewidth=1,
+        alpha=0.8,
+        align="center",
+    )
+    ax.set_thetamin(0)
+    ax.set_thetamax(180)
+    ax.set_yticks([])
+    ax.grid(False)
+    ax.tick_params(axis="x", labelsize=30)
+    fig.savefig(output_path, format="png")
+    plt.close(fig)
     return
 
 def filament_info_time(img_o, g_tagged, posL, path,imF,maskDraw):
@@ -2804,4 +2800,4 @@ def get_tiff_path(filename):
     """
     Get the path to a TIFF file in the package data.
     """
-    return pkg_resources.resource_filename('graft.data', filename)
+    return os.fspath(files("graft.data").joinpath(filename))

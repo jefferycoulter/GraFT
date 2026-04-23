@@ -3,6 +3,8 @@
 
 import concurrent.futures
 import numpy as np
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import os
 import networkx as nx
@@ -16,8 +18,7 @@ def create_output_dirs(output_dir):
     """Ensure that the given output directory incl. subdirectories exists."""
     for subdir_name in ('n_graphs', 'circ_stat', 'mov', 'plots'):
         subdir_path = os.path.join(output_dir, subdir_name)
-        if not os.path.exists(subdir_path):
-            os.makedirs(subdir_path)
+        os.makedirs(subdir_path, exist_ok=True)
 
 
 def generate_default_mask(image_shape):
@@ -127,13 +128,17 @@ def create_all(pathsave, img_o, maskDraw, size, eps, thresh_top, sigma,
 
     imgP = pad_timeseries_images(img_o)
 
-    if parallelize:  # prcoess images in parallel
-        with concurrent.futures.ProcessPoolExecutor() as executor:
-            futures = {executor.submit(process_individual_image, image, pathsave, size, eps, thresh_top, sigma, small, angleA, overlap, i): i for i, image in enumerate(imgP)}
-            for future in concurrent.futures.as_completed(futures):
-                i = futures[future]
-                posL[i], graphTagg[i], imF[i] = future.result()
-    else:  # process images sequentially
+    if parallelize:  # process images in parallel when the runtime allows it
+        try:
+            with concurrent.futures.ProcessPoolExecutor() as executor:
+                futures = {executor.submit(process_individual_image, image, pathsave, size, eps, thresh_top, sigma, small, angleA, overlap, i): i for i, image in enumerate(imgP)}
+                for future in concurrent.futures.as_completed(futures):
+                    i = futures[future]
+                    posL[i], graphTagg[i], imF[i] = future.result()
+        except (PermissionError, NotImplementedError, OSError):
+            parallelize = False
+
+    if not parallelize:  # process images sequentially
         for i, image in enumerate(imgP):
             posL[i], graphTagg[i], imF[i] = process_individual_image(image, pathsave, size, eps, thresh_top, sigma, small, angleA, overlap, i)
 
