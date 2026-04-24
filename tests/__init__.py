@@ -47,5 +47,9 @@ def compare_images(image_path_1, image_path_2, method='ssim', tolerance=0.99):
         img1_gray = rgb2gray(img1)
         img2_gray = rgb2gray(img2)
 
-        ssim_index = ssim(img1_gray, img2_gray)
+        # for rgb2gray, the output is in the range [0.0, 1.0], so set the data_range to max - min = 1.0
+        # https://scikit-image.org/docs/0.25.x/auto_examples/transform/plot_ssim.html
+        # https://github.com/npinto/scikits-image/blob/master/skimage/color/colorconv.py#L461
+        # https://github.com/npinto/scikits-image/blob/master/skimage/color/colorconv.py#L296
+        ssim_index = ssim(img1_gray, img2_gray, data_range=1.0)
         return ssim_index >= tolerance
